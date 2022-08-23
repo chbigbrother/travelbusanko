@@ -8,4 +8,4 @@ const CreatePage = () => {
     );
 };
 
-export default CreatePage;
+export default CreatePage; 

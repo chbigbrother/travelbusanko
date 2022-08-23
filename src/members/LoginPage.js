@@ -1,14 +1,18 @@
-import Axios from "axios";
+// src/pages/LoginPage.jsx
+
 import { useEffect, useState } from "react";
-import { Link } from 'react-router-dom';
+import { refreshToken } from '../token/Auth';
+import { Link, useHistory } from 'react-router-dom';
 import './LoginPage.css';
+import axios from "axios";
 
-var url = 'http://travelbusanko.com';
+const url = 'http://localhost:5000';
 
-function LoginPage() {
+function LoginPage(props){
+    
     const [inputId, setInputId] = useState('');
     const [inputPw, setInputPw] = useState('');
-
+    
     /// input data 변화시 value 값을 변경시 useState 해준다.
     const handleInputId = (e) => {
         setInputId(e.target.value)
@@ -18,30 +22,41 @@ function LoginPage() {
         setInputPw(e.target.value)
     }
 
-    /// login 버튼 클릭 이벤트
-    const onClickLogin = () => {
-        Axios.post(url + '/api/login', null, {
-            params: {
-                'user_id': inputId,
-                'user_pwd': inputPw
-            }
-        }).then((response) => {
-            
-            if (response.data.userId === undefined) {
-                alert('입력하신 id가 일치하지 않습니다.')
-            } else if (response.data.userId === null) {
-                alert('입력하신 pwd가 일치하지 않습니다.')
-            } else if (response.data.userId === inputId) {
-                console.log("success?");
-                sessionStorage.setItem('user_id', inputId)
-                document.location.href = url
-            }
-            
-        }).catch()
+    function onClickLogin(){
+        try{
+            let data = {userId: inputId, userPw: inputPw};
+            axios.post(url + "/api/login",JSON.stringify(data), {
+                headers: {
+                  "Content-Type": `application/json`,
+                }})
+            .then(res =>{
+                axios.defaults.headers.common['Authorization'] = 'Bearer ' + res.data;
+                props.loginCallBack(true);
+                props.accessToken(res.data.token);
+                props.UserInfo(inputId);
+                props.history.push("/");
+                
+                setTimeout(function(){
+                    refreshToken(null);
+                    window.location.href= 'http://localhost:3000/login'; 
+                } , (60 * 10000));
+            })
+            .catch(ex=>{
+                console.log("login requset fail : " + ex);
+            })
+            .finally(()=>{console.log("login request end")});
+        }catch(e){
+            console.log(e);
+        }
+        
+        
     }
 
-    return ( 
-        <>
+    useEffect(()=>{
+        
+    })
+
+    return(
         <div className="App">
             <div className="Auth-form-container">
                 <form className="Auth-form">
@@ -67,7 +82,6 @@ function LoginPage() {
                 </form>
             </div>
         </div>
-        </>
     )
 }
 

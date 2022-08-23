@@ -1,7 +1,16 @@
 import {  Link, NavLink } from 'react-router-dom';
 import {Fragment} from 'react';
+import axios from 'axios';
 
-const NavBar = () =>{ 
+const NavBar = (props) =>{ 
+    const userinfo = props.UserInfo;
+    const handleLogout = () => {  // 로그아웃을 위한 메소드 제작
+      axios.post('http://localhost:5000/api/logout', {
+          headers: {'Content-Type': 'application/json'},
+          withCredentials: true,
+        }).then(() => props.logoutCallBack())  // 로그인 상태 변경
+        // .catch((e) => alert(e));
+    };
     return(
     <Fragment>
     <nav className="navbar bg-light">               
@@ -13,24 +22,26 @@ const NavBar = () =>{
             }}
              className="navbar-nav"
           >
-            <li className="nav-item me-3">
-                <NavLink               
-                 activeClassName="active"
-                 className="nav-link" 
-                 aria-current="page" 
-                 to="/maps">
-                  <img src="/images/icons8-location-48.png" alt="" width="30" height="24" className="d-inline-block align-text-top" />
-                 map                
-                </NavLink>
-            </li>  
+              <li className="nav-item me-3">
+                  <NavLink               
+                  activeClassName="active"
+                  className="nav-link" 
+                  aria-current="page" 
+                  to="/maps">
+                    <img src="/images/icons8-location-48.png" alt="" width="30" height="24" className="d-inline-block align-text-top" />
+                  map                
+                  </NavLink>
+              </li>  
               <li className="nav-item me-3">
                 <NavLink               
                  activeClassName="active"
                  className="nav-link" 
                  aria-current="page" 
-                 to="/Members">
+                 onClick={handleLogout}
+                 to="/login">
                  <img src="/images/icons8-edit-profile-80.png" alt="" width="30" height="24" className="d-inline-block align-text-top" />                            
                 </NavLink>
+                { userinfo }
               </li>                 
               <li>
                 <NavLink               

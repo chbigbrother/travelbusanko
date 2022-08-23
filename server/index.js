@@ -4,6 +4,9 @@ const mysql = require('mysql');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { urlencoded } = require('body-parser');
+const { response } = require('express');
+const session = require('express-session');
+const jwt = require("jsonwebtoken");
 const PORT = process.env.port || 5000;
 
 /* const db = mysql.createPool({
@@ -13,6 +16,21 @@ const PORT = process.env.port || 5000;
     database: "jobshop",
     port: '3306',
 });  */
+app.use(
+    session({
+        secret:'@travelbusanko',
+        resave: false,
+        saveUninitialized: true,
+        cookie: {
+            domain: 'localhost',
+            path: '/',
+            maxAge: 24 * 6 * 60 * 10000,
+            sameSite: 'none',
+            httpOnly: true,
+            secure: false
+        }
+    })
+)
 
 //http://db.travelbusanko.com:3306/
  const db = mysql.createPool({
@@ -23,13 +41,7 @@ const PORT = process.env.port || 5000;
    // port: '3306',
 }); 
 
-//db.connect();
-// 콘솔 확인
-db.query('SELECT * FROM users', (error, result) => {
-    if (error) return console.log(error, 'check!!!');  
-    console.log(result);
-  }); 
-    
+  
 app.use(cors())
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -153,9 +165,20 @@ app.put("/board_test/:id", (req, res) => {
 /* 로그인 */
 app.post("/api/login", (req, res) => {
     
-    const user_id = req.query.user_id;
-    const user_pw = req.query.user_pwd;
-    console.log(user_id + user_pw);
+    const user_id = req.body.userId;
+    const user_pw = req.body.userPw;
+    const user_info = new String(user_id);
+
+    const accessToken = jwt.sign({
+        travelbusanko: "travelbusanko"
+    },
+    "secretkey",
+    {
+        subject: "logintoken",
+        expiresIn: "60m",
+        issuer: user_info.toString()
+    });
+    
     //입력된 id 와 동일한 id DB에서 확인
     const sqlQuery1 = "SELECT COUNT(*) AS result FROM users where id=?";
     db.query(sqlQuery1, user_id, (err, data) => {
@@ -178,7 +201,11 @@ app.post("/api/login", (req, res) => {
                 const params = [user_id, user_pw, user_id, user_pw, user_id, user_pw, user_id, user_pw];
                 db.query(sqlQuery2, params, (err, data) => {
                     if(!err) {
+                        req.session.user_id = user_id;
+                        req.session.save();
+                        data[0]['token'] = accessToken;
                         res.send(data[0]);
+                        
                     } else {
                         res.send(err);
                     }
@@ -188,8 +215,15 @@ app.post("/api/login", (req, res) => {
             res.send(err);
         }
     })
-
+    console.log(req.session)
+    
 })
+
+/* 로그아웃 */
+app.post("/api/logout", (req, res) => {
+    req.session.destroy();      // 세션 삭제
+    res.json({ data: null, message: 'ok' });
+});
 
 /* 회원가입 */
 app.post("/api/signup", (req, res) => {
