@@ -5,7 +5,7 @@ import axios from 'axios';
 const NavBar = (props) =>{ 
     const userinfo = props.UserInfo;
     const handleLogout = () => {  // 로그아웃을 위한 메소드 제작
-      axios.post('http://localhost:5000/api/logout', {
+      axios.post('http://travelbusanko.com/api/logout', {
           headers: {'Content-Type': 'application/json'},
           withCredentials: true,
         }).then(() => props.logoutCallBack())  // 로그인 상태 변경
@@ -38,7 +38,7 @@ const NavBar = (props) =>{
                  className="nav-link" 
                  aria-current="page" 
                  onClick={handleLogout}
-                 to="/login">
+                 to="/">
                  <img src="/images/icons8-edit-profile-80.png" alt="" width="30" height="24" className="d-inline-block align-text-top" />                            
                 </NavLink>
                 { userinfo }
@@ -48,7 +48,7 @@ const NavBar = (props) =>{
                  activeClassName="active"
                  className="nav-link" 
                  aria-current="page" 
-                 to="/Members">
+                 to="/">
                  <img src="/images/icons8-search-58.png" alt="" width="30" height="24" className="d-inline-block align-text-top" />                             
                 </NavLink>
 

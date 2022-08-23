@@ -5,9 +5,11 @@ import {
 } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import LoginPage from './members/LoginPage';
+import SignupPage from './members/SignupPage';
 import HomePage from './homes/HomePage';
 import AuthRoute from './components/AuthRoute';
 import { refreshToken } from './token/Auth';
+
 
 function App(){
     
@@ -37,7 +39,7 @@ function App(){
     function logoutCallBack(logout){
       setIsLogin(false);
       localStorage.setItem("token", 'undefined');
-      window.location.href= 'http://localhost:3000/login'; 
+      window.location.href= 'http://travelbusanko.com'; 
     }
 
     function UserInfo(object){
@@ -47,12 +49,17 @@ function App(){
     if(loading){
       return ( 
         <Router>
+        <>
           {!isLogin && localStorage.getItem("token") == 'undefined' ? (
-              <Route path="/login" render={(props)=> <LoginPage {...props} loginCallBack={loginCallBack} UserInfo={UserInfo} accessToken={accessToken} />} />
+            <Switch>
+              <Route exact path="/" render={(props)=> <LoginPage {...props} loginCallBack={loginCallBack} UserInfo={UserInfo} accessToken={accessToken} />} />
+              <Route exact path="/members/signup" component={SignupPage} key='/members/signup' />          
+            </Switch>
             ) : (
               <AuthRoute exact isLogin={isLogin} path="/" component={HomePage} UserInfo={userInfo} logoutCallBack={logoutCallBack} accessToken={generateToken} />
             )
-          }          
+          }
+        </>          
         </Router>
       );
     } else {

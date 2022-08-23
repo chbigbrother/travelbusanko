@@ -6,7 +6,7 @@ import { Link, useHistory } from 'react-router-dom';
 import './LoginPage.css';
 import axios from "axios";
 
-const url = 'http://localhost:5000';
+const url = 'http://travelbusanko.com';
 
 function LoginPage(props){
     
@@ -23,6 +23,7 @@ function LoginPage(props){
     }
 
     function onClickLogin(){
+        
         try{
             let data = {userId: inputId, userPw: inputPw};
             axios.post(url + "/api/login",JSON.stringify(data), {
@@ -38,7 +39,7 @@ function LoginPage(props){
                 
                 setTimeout(function(){
                     refreshToken(null);
-                    window.location.href= 'http://localhost:3000/login'; 
+                    window.location.href= 'http://travelbusanko.com'; 
                 } , (60 * 10000));
             })
             .catch(ex=>{
@@ -76,7 +77,7 @@ function LoginPage(props){
                         </button>
                     </div>
                     <p className="forgot-password text-right mt-2">
-                        <Link to="/Members/signup">회원가입</Link>
+                        <Link to="/members/signup">회원가입</Link>
                     </p>
                     </div>
                 </form>

@@ -6,7 +6,6 @@ import CreatePage from './blogs/CreatePage';
 import EditPage from './blogs/EditPage';
 import ListPage from './blogs/ListPage';
 import LoginPage from './members/LoginPage';
-import SignupPage from './members/SignupPage';
 //import AdminPage from './blogs/AdminPage';
 //import ShowPage from './blogs/ShowPage';
 import ShowPage from './blogs/ShowPage';
@@ -38,12 +37,8 @@ const routes = [
   component: CreatePage
 },
 {
-  path: '/members',
+  path: '/login',
   component: LoginPage
-},
-{
-  path: '/members/signup',
-  component: SignupPage
 },
 {
   path: '/blogs/:id/edit',
