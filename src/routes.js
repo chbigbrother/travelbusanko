@@ -13,7 +13,7 @@ import ShowPage from './blogs/ShowPage';
 
 const routes = [
 {
-  path: '/',
+  path: '/home',
   component: HomePage
 },
 {

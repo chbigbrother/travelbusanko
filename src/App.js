@@ -56,7 +56,7 @@ function App(){
               <Route exact path="/members/signup" component={SignupPage} key='/members/signup' />          
             </Switch>
             ) : (
-              <AuthRoute exact isLogin={isLogin} path="/" component={HomePage} UserInfo={userInfo} logoutCallBack={logoutCallBack} accessToken={generateToken} />
+              <AuthRoute exact isLogin={isLogin} path="/home" component={HomePage} UserInfo={userInfo} logoutCallBack={logoutCallBack} accessToken={generateToken} />
             )
           }
         </>          
