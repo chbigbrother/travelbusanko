@@ -11,7 +11,6 @@ function SignupPage() {
     const [inputEmail, setInputEmail] = useState('');
     const [inputPhone, setInputPhone] = useState('');
     const [inputBirth, setInputBirth] = useState('');
-    console.log("ccccc");
     
     const handleInputId = (e) => {
         setInputId(e.target.value)

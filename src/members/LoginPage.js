@@ -5,6 +5,7 @@ import { refreshToken } from '../token/Auth';
 import { Link, useHistory } from 'react-router-dom';
 import './LoginPage.css';
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const url = 'http://travelbusanko.com';
 
@@ -31,16 +32,51 @@ function LoginPage(props){
                   "Content-Type": `application/json`,
                 }})
             .then(res =>{
-                axios.defaults.headers.common['Authorization'] = 'Bearer ' + res.data;
-                props.loginCallBack(true);
-                props.accessToken(res.data.token);
-                props.UserInfo(inputId);
-                props.history.push("/");
+                if(res.data.userId === undefined){
+                    //[id 불일치] userID = undefined, msg = '입력하신 id가 유효하지 않습니다.'
+                    alert("입력하신 아이디가 일치하지 않습니다.");
+                    Swal.fire({
+                        icon: "warning",
+                        title: "로그인 에러",
+                        text: '입력하신 아이디가 일치하지 않습니다.',
+                        showCancelButton: true,
+                        confirmButtonText: "확인",
+                        cancelButtonText: "취소",
+                    })
+                } else if(res.data.userId === null){
+                    //[id 존재, pw 불일치] userID = null, msg = undefined
+                    alert("입력하신 비밀번호가 일치하지 않습니다.")
+                    Swal.fire({
+                        icon: "warning",
+                        title: "로그인 에러",
+                        text: `입력하신 비밀번호가 일치하지 않습니다.`,
+                        showCancelButton: true,
+                        confirmButtonText: "확인",
+                        cancelButtonText: "취소",
+                    })
+                } else if(res.data.userId === inputId){
+                    //[id pw 일치] userID = userId1, msg = undefined
+                    Swal.fire({
+                        icon: 'success',
+                        title: '로그인 성공',
+                        showConfirmButton: false,
+                        timer: 1000,
+                        timerProgressBar: true,
+                    })
+                    axios.defaults.headers.common['Authorization'] = 'Bearer ' + res.data;
+                    
+                    props.loginCallBack(true);
+                    props.accessToken(res.data.token);
+                    props.UserInfo(inputId);
+                    props.history.push(props);
+                    window.location.href= 'http://travelbusanko.com/home'; 
+                   
+                    setTimeout(function(){
+                        refreshToken(null);
+                        window.location.href= 'http://travelbusanko.com/home'; 
+                    } , (60 * 10000));
+                }
                 
-                setTimeout(function(){
-                    refreshToken(null);
-                    window.location.href= 'http://travelbusanko.com'; 
-                } , (60 * 10000));
             })
             .catch(ex=>{
                 console.log("login requset fail : " + ex);
@@ -56,7 +92,7 @@ function LoginPage(props){
     useEffect(()=>{
         
     })
-
+    
     return(
         <div className="App">
             <div className="Auth-form-container">

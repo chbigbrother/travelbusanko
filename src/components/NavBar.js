@@ -1,21 +1,39 @@
 import {  Link, NavLink } from 'react-router-dom';
 import {Fragment} from 'react';
 import axios from 'axios';
+import Swal from "sweetalert2";
 
 const NavBar = (props) =>{ 
     const userinfo = props.UserInfo;
     const handleLogout = () => {  // 로그아웃을 위한 메소드 제작
-      axios.post('http://travelbusanko.com/api/logout', {
-          headers: {'Content-Type': 'application/json'},
-          withCredentials: true,
-        }).then(() => props.logoutCallBack())  // 로그인 상태 변경
-        // .catch((e) => alert(e));
+      Swal.fire({
+        icon: "warning",
+        title: "로그아웃",
+        text: `로그아웃 하시겠습니까??`,
+        showCancelButton: true,
+        confirmButtonText: "확인",
+        cancelButtonText: "취소",
+        }).then((res) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (res.isConfirmed) {
+              //삭제 요청 처리
+              axios.post('http://travelbusanko.com/api/logout', {
+                      headers: {'Content-Type': 'application/json'},
+                      withCredentials: true,
+                    }).then(() => props.logoutCallBack())  // 로그인 상태 변경
+                    // .catch((e) => alert(e));
+            }
+            else{
+                //취소
+            }
+        });
+      
     };
     return(
     <Fragment>
     <nav className="navbar bg-light">               
         <div className="container">         
-          <p className="fs-4 fw-bold text-primary " to="/"> TRAVEL KOREA </p>            
+          <p className="fs-4 fw-bold text-primary " to="/home"> TRAVEL KOREA </p>            
           <ul 
             style={{
                 flexDirection: 'row'
@@ -60,7 +78,7 @@ const NavBar = (props) =>{
     </nav>   
     <nav className="navbar navbar-dark bg-primary">               
         <div className="container">
-          <Link className="navbar-brand" to="/"> HOME </Link>              
+          <Link className="navbar-brand" to="/home"> HOME </Link>              
           <ul 
             style={{
                 flexDirection: 'row'

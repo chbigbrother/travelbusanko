@@ -32,31 +32,32 @@ function App(){
     }
 
     function accessToken(token){
-      window.localStorage.setItem("token", token);
+      localStorage.setItem("token", token);
       setToken(token);
     }
 
     function logoutCallBack(logout){
       setIsLogin(false);
       localStorage.setItem("token", 'undefined');
-      window.location.href= 'http://travelbusanko.com'; 
+      window.location.href=  'http://travelbusanko.com'; // 'http://localhost:3000'; //
     }
 
     function UserInfo(object){
+      localStorage.setItem("user", object);
       setUserInfo(object);
     }
-    
+    console.log(isLogin + " " + localStorage.getItem("token"));
     if(loading){
       return ( 
         <Router>
         <>
-          {!isLogin && localStorage.getItem("token") == 'undefined' ? (
+          {!isLogin && localStorage.getItem("token") == 'undefined' || localStorage.getItem("token") == null ? (
             <Switch>
               <Route exact path="/" render={(props)=> <LoginPage {...props} loginCallBack={loginCallBack} UserInfo={UserInfo} accessToken={accessToken} />} />
               <Route exact path="/members/signup" component={SignupPage} key='/members/signup' />          
             </Switch>
             ) : (
-              <AuthRoute exact isLogin={isLogin} path="/home" component={HomePage} UserInfo={userInfo} logoutCallBack={logoutCallBack} accessToken={generateToken} />
+              <AuthRoute exact isLogin={isLogin} path="/home" component={HomePage} UserInfo={localStorage.getItem("user")} logoutCallBack={logoutCallBack} accessToken={generateToken} />
             )
           }
         </>          

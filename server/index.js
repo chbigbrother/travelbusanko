@@ -7,6 +7,10 @@ const { urlencoded } = require('body-parser');
 const { response } = require('express');
 const session = require('express-session');
 const jwt = require("jsonwebtoken");
+/* 사진 업로드를 위한 library */
+const multer = require("multer");
+var router   = express.Router();
+const path = require("path");
 const PORT = process.env.port || 5000;
 
 /* const db = mysql.createPool({
@@ -42,6 +46,47 @@ app.use(
    // port: '3306',
 }); 
 
+const id_getter = (t, c) => {
+    return new Promise(resolve => {
+        const sqlQuery = "SELECT " + c + " FROM " + t + " ORDER BY " + c + " DESC LIMIT 1";
+        
+        db.query(sqlQuery, (err, result)=>{
+            if (result.length == 0){
+                resolve("0");
+            } else{
+                resolve(result[0]);
+            }
+            
+        })
+    })
+}
+
+const id_generate = (request, id) => {
+    
+    return new Promise(resolve => {
+        var int_id = "";
+        if (typeof(id) == "undefined"){
+            int_id = "0";
+        } else{
+            int_id = id.slice(-1);
+        }
+        var cnt_id = parseInt(int_id) + 1;
+        var str_id = "";
+        
+        if (cnt_id < 10){
+            str_id = request + '00' + cnt_id.toString();
+        } 
+        if (cnt_id >= 10) {
+            str_id = request + '0' + cnt_id.toString();
+        }
+        if (cnt_id > 99) {
+            str_id = request + cnt_id.toString();
+        }
+        resolve(str_id);
+    })
+    
+}
+
   
 app.use(cors())
 app.use(express.json());
@@ -52,7 +97,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //https://ddeck.tistory.com/27
 //https://meetup.toast.com/posts/92 REST API 설계
 
-app.get("/", (req,res) => {
+app.get("/home", (req,res) => {
     res.send('Server Response Success!!!');
 }) 
 
@@ -216,7 +261,6 @@ app.post("/api/login", (req, res) => {
             res.send(err);
         }
     })
-    console.log(req.session)
     
 })
 
@@ -256,6 +300,163 @@ app.post('/api/checkid', (req, res)=>{
         }      
     })
 })
+
+/* 위치 타입 조회 */
+app.get('/api/location/types', async (req, res)=>{
+    const sqlQuery = "SELECT * FROM loc_type";
+    db.query(sqlQuery, (err, result)=>{
+        res.json(result)   
+    })       
+})
+
+app.get('/api/location/types/main', async (req, res)=>{
+    const sqlQuery = "SELECT * FROM main_locations";
+    db.query(sqlQuery, (err, result)=>{
+        res.json(result)   
+    })       
+})
+
+app.get('/api/location/types/main/:id', async (req, res)=>{
+    const id = req.params.id;
+    const sqlQuery = "SELECT * FROM main_locations WHERE mloc_id=?";
+    db.query(sqlQuery, [id], (err, result)=>{
+        res.json(result)   
+    })       
+})
+
+/* 사진 저장 루틴 */
+var storage  = multer.diskStorage({ // 2
+    destination(req, file, cb) {
+      cb(null, 'uploads/');
+    },
+    filename(req, file, cb) {
+      cb(null, `${Date.now()}__${file.originalname}`);
+    },
+});
+var upload = multer({ dest: 'uploads/' }); // 3-1
+var uploadWithOriginalFilename = multer({ storage: storage }); // 3-2
+
+app.post('/api/upload/images', upload.array("uploadfile"), async (req, res)=>{
+    
+    const path_ids = [];
+    /* 게시글 별 이미지 추가 루틴*/
+    for(var i=0; i<req.files.length; i++){
+        const get_path_id = await id_getter("image_path", "path_id");
+        const path_id = await id_generate('PATH', get_path_id.path_id);
+        path_ids.push(path_id);
+        const saved_path = req.files[i].path;
+        const file_name = req.files[i].originalname;
+        const sqlQuery = "INSERT INTO image_path(path_id, saved_path, file_name) VALUES (?,?,?)";
+        db.query(sqlQuery, [path_id, saved_path, file_name], (err, result) => {
+            
+        });
+        
+    }
+    
+})
+
+
+/* 사진 저장 루틴 */
+
+const addmloc_db_insert = (e,p) => {
+    
+    const sqlQuery = "INSERT INTO main_locations(mloc_id, loc_name, loc_lat, loc_lng, loctype_id) VALUES (?,?,?,?,?)";
+    db.query(sqlQuery, e, (err, result) => {
+        console.log(err);
+        console.log("insert success"); //changedRows
+    });
+    for (var i=0; i<p.length; i++){
+        const sqlQuery2 = "UPDATE image_path SET loc_id=? where path_id=?";
+        db.query(sqlQuery2, [e[0], p[i]], (err, result)=>{
+            console.log("update success"); //changedRows
+        })
+    }
+}   
+
+const addsloc_db_insert = (e,p) => {
+    
+    const sqlQuery = "INSERT INTO sub_locations(mloc_id, sloc_id, loc_name, loc_lat, loc_lng, loctype_id) VALUES (?,?,?,?,?,?)";
+    db.query(sqlQuery, e, (err, result) => {
+        console.log(err);
+        console.log("insert success"); //changedRows
+    });
+    for (var i=0; i<p.length; i++){
+        const sqlQuery2 = "UPDATE image_path SET loc_id=? where path_id=?";
+        db.query(sqlQuery2, [e[0], p[i]], (err, result)=>{
+            console.log("update success"); //changedRows
+        })
+    }
+}   
+
+
+
+app.post('/api/add/location', upload.array("uploadfile"), async (req, res)=>{
+    
+    const post_type = req.body.post_type;
+    const columns = [];
+    const path_ids = [];
+    if(post_type == "LOC"){
+        const get_id = "";
+        const loc_id = "";
+        if(req.body.loctype_id == "loct_001"){
+            const get_id = await id_getter("main_locations", "mloc_id");
+            const loc_id = await id_generate('MLOC', get_id.mloc_id);
+            columns.push(loc_id);
+        } else {
+            const get_id = await id_getter("sub_locations", "sloc_id");
+            const loc_id = await id_generate('SLOC', get_id.sloc_id);
+            const mloc_id = req.body.main_loctype_id;
+            columns.push(mloc_id);
+            columns.push(loc_id);
+        }
+        const loc_name = req.body.loc_name;
+        const loc_lat = req.body.loc_lat;
+        const loc_lng = req.body.loc_lng;
+        const loctype_id = req.body.loctype_id;
+        
+        
+        columns.push(loc_name);
+        columns.push(loc_lat);
+        columns.push(loc_lng);
+        columns.push(loctype_id);
+        
+        
+        /* 게시글 별 이미지 추가 루틴*/
+        for(var i=0; i<req.files.length; i++){
+            const get_path_id = await id_getter("image_path", "path_id");
+            const path_id = await id_generate('PATH', get_path_id.path_id);
+            path_ids.push(path_id);
+            const saved_path = req.files[i].path;
+            const file_name = req.files[i].originalname;
+            const sqlQuery = "INSERT INTO image_path(path_id, saved_path, file_name) VALUES (?,?,?)";
+            db.query(sqlQuery, [path_id, saved_path, file_name], (err, result) => {
+                
+            });
+            
+            if(i==req.files.length-1){
+                if(req.body.loctype_id == "loct_001"){
+                    addmloc_db_insert(columns, path_ids);
+                } else{
+                    addsloc_db_insert(columns, path_ids);
+                }
+                
+            }
+        }
+    
+    }
+    
+})
+
+/* 사진 조회 */
+app.get('/api/view/image/:loc_id', async (req, res)=>{
+    const loc_id = req.params.loc_id;
+    const sqlQuery = "SELECT * FROM image_path WHERE loc_id=?";
+    db.query(sqlQuery, [loc_id], (err, result)=>{
+        res.json(result);   
+    })       
+})
+
+
 
 app.listen(5000, () => {
     console.log(`running on port ${PORT}`);
