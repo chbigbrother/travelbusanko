@@ -90,7 +90,7 @@ function ModifyUser(props){
                             <input type="text" className="form-control mt-1" placeholder="010-1234-0000" name = "user_phone" value={inputPhone} onChange = { handleinputPhone } />
                         </div>
                         <div className="form-group mt-3">
-                            <label>생년월일</label>
+                            <label>생년월일</label>  
                             <input type="text" className="form-control mt-1" placeholder="6자리 생년월일 입력" name = "user_birth" value={inputBirth} onChange = { handleinputBirth } />
                         </div>
                         <div className="d-grid gap-2 mt-3">
