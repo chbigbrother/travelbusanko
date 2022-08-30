@@ -13,7 +13,7 @@ function ModifyUser(props){
     const [inputId, setInputId] = useState('');
     const [inputPw, setInputPw] = useState('');
     const [inputName, setInputName] = useState('');
-    const [inputEmail, setInputEmail] = useState('');
+    const [inputEmail, setInputEmail] = useState('');   
     const [inputPhone, setInputPhone] = useState('');
     const [inputBirth, setInputBirth] = useState('');
 
