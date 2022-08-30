@@ -9,7 +9,7 @@ const url = 'http://travelbusanko.com'; // 'http://localhost:5000'//
 
 function ModifyUser(props){
     const userinfo = props.location.inputValue.userinfo;
-    
+    testtest
     const [inputId, setInputId] = useState('');
     const [inputPw, setInputPw] = useState('');
     const [inputName, setInputName] = useState('');
