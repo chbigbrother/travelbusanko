@@ -46,7 +46,7 @@ function App(){
       localStorage.setItem("user", object);
       setUserInfo(object);
     }
-    console.log(isLogin + " " + localStorage.getItem("token"));
+    
     if(loading){
       return ( 
         <Router>

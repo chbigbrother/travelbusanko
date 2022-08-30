@@ -6,6 +6,7 @@ import CreatePage from './blogs/CreatePage';
 import EditPage from './blogs/EditPage';
 import ListPage from './blogs/ListPage';
 import LoginPage from './members/LoginPage';
+import ModifyUser from './members/ModifyUser';
 //import AdminPage from './blogs/AdminPage';
 //import ShowPage from './blogs/ShowPage';
 import ShowPage from './blogs/ShowPage';
@@ -39,6 +40,10 @@ const routes = [
 {
   path: '/login',
   component: LoginPage
+},
+{
+  path: '/user/modify',
+  component: ModifyUser
 },
 {
   path: '/blogs/:id/edit',

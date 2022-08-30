@@ -1,10 +1,23 @@
-import {  Link, NavLink } from 'react-router-dom';
-import {Fragment} from 'react';
+import {  Link, NavLink, useHistory } from 'react-router-dom';
+import { Fragment, useState, useRef } from 'react';
 import axios from 'axios';
 import Swal from "sweetalert2";
+import Button from 'react-bootstrap/Button';
+import Overlay from 'react-bootstrap/Overlay';
+import Popover from 'react-bootstrap/Popover';
 
 const NavBar = (props) =>{ 
     const userinfo = props.UserInfo;
+    const [show, setShow] = useState(false);
+    const [target, setTarget] = useState(null);
+    const nextPage = useHistory();
+    const ref = useRef(null);
+    console.log(nextPage);
+    const handleClick = (event) => {
+      setShow(!show);
+      setTarget(event.target);
+    };
+
     const handleLogout = () => {  // 로그아웃을 위한 메소드 제작
       Swal.fire({
         icon: "warning",
@@ -27,8 +40,8 @@ const NavBar = (props) =>{
                 //취소
             }
         });
-      
     };
+
     return(
     <Fragment>
     <nav className="navbar bg-light">               
@@ -50,16 +63,55 @@ const NavBar = (props) =>{
                   map                
                   </NavLink>
               </li>  
-              <li className="nav-item me-3">
-                <NavLink               
+              <li className="nav-item me-3" ref={ref}>
+                <Button style={{"background": "none", "border":"none"}} 
+                  onClick={handleClick}><img src="/images/icons8-edit-profile-80.png" 
+                  alt="" 
+                  width="30" 
+                  height="24" 
+                  className="d-inline-block align-text-top"/>
+                </Button>
+                <Overlay
+                  show={show}
+                  target={target}
+                  placement="bottom"
+                  container={ref}
+                  containerPadding={20}
+                >
+                  <Popover id="popover-contained">
+                    <Popover.Header as="h3">{ userinfo }</Popover.Header>
+                    <Popover.Body>
+                      <Button style={{"background": "none", "border":"none"}}             
+                        activeClassName="active"
+                        className="nav-link" 
+                        aria-current="page" 
+                        onClick={() =>  nextPage.push({
+                          pathname: "/user/modify",
+                          inputValue: {userinfo},
+                          })}
+                        >
+                          사용자 정보 변경
+                      </Button>
+                      <hr/>
+                      <NavLink               
+                        activeClassName="active"
+                        className="nav-link" 
+                        aria-current="page" 
+                        onClick={ handleLogout } 
+                        to="#">
+                          로그아웃
+                      </NavLink>
+                    </Popover.Body>
+                  </Popover>
+                </Overlay>
+                {/* <NavLink               
                  activeClassName="active"
                  className="nav-link" 
                  aria-current="page" 
                  onClick={handleLogout}
-                 to="/">
+                 to="#">
                  <img src="/images/icons8-edit-profile-80.png" alt="" width="30" height="24" className="d-inline-block align-text-top" />                            
-                </NavLink>
-                { userinfo }
+                </NavLink> */}                
               </li>                 
               <li>
                 <NavLink               

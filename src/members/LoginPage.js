@@ -69,7 +69,7 @@ function LoginPage(props){
                     props.accessToken(res.data.token);
                     props.UserInfo(inputId);
                     props.history.push(props);
-                    window.location.href= 'http://travelbusanko.com/home'; 
+                    // window.location.href= 'http://travelbusanko.com/home'; 
                    
                     setTimeout(function(){
                         refreshToken(null);

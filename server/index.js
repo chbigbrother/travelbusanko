@@ -301,6 +301,30 @@ app.post('/api/checkid', (req, res)=>{
     })
 })
 
+app.get('/api/user/info/:id', (req, res)=>{
+    const id = req.params.id;
+    console.log(id);
+    const sqlQuery = "SELECT * FROM users WHERE id=?";
+    db.query(sqlQuery, [id], (err, result)=>{
+        res.json(result)   
+    })  
+})
+
+app.post('/api/user/info/update', (req, res)=>{
+    console.log("requested");
+    const id = req.query.user_id;
+    const password = req.query.user_pwd;
+    const email = req.query.user_email;
+    const name = req.query.user_name;
+    const phone_number = req.query.user_phone;
+    const birthday = req.query.user_birth;
+
+    const sqlQuery = "UPDATE users SET email=?, password=?, name=?, phone_number=?, birthday=? WHERE id=?";
+    db.query(sqlQuery, [email, password, name, phone_number, birthday, id], (err, result) => {
+        res.send('success!');
+    });
+})
+
 /* 위치 타입 조회 */
 app.get('/api/location/types', async (req, res)=>{
     const sqlQuery = "SELECT * FROM loc_type";
@@ -318,7 +342,7 @@ app.get('/api/location/types/main', async (req, res)=>{
 
 app.get('/api/location/types/main/:id', async (req, res)=>{
     const id = req.params.id;
-    const sqlQuery = "SELECT * FROM main_locations WHERE mloc_id=?";
+    const sqlQuery = "SELECT * FROM sub_locations WHERE mloc_id=?";
     db.query(sqlQuery, [id], (err, result)=>{
         res.json(result)   
     })       
@@ -406,6 +430,7 @@ app.post('/api/add/location', upload.array("uploadfile"), async (req, res)=>{
             const get_id = await id_getter("sub_locations", "sloc_id");
             const loc_id = await id_generate('SLOC', get_id.sloc_id);
             const mloc_id = req.body.main_loctype_id;
+            console.log(req.body);
             columns.push(mloc_id);
             columns.push(loc_id);
         }
@@ -436,14 +461,17 @@ app.post('/api/add/location', upload.array("uploadfile"), async (req, res)=>{
             if(i==req.files.length-1){
                 if(req.body.loctype_id == "loct_001"){
                     addmloc_db_insert(columns, path_ids);
+                    res.send('success!');
                 } else{
                     addsloc_db_insert(columns, path_ids);
+                    res.send('success!');
                 }
                 
             }
         }
     
     }
+    
     
 })
 

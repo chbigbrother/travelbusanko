@@ -25,9 +25,14 @@ const MapPage = (props) => {
       lat : lat,
       lng : lng
     }
-
-    let loc_id = props.location.inputValue.mloc_id;
+    var loc_id = "MLOC001";
+    
+    
     useEffect(() => {
+      if (typeof(props.location.inputValue) != 'undefined'){
+        loc_id = props.location.inputValue.mloc_id;
+      }
+      
       axios.get(url + `/api/location/types/main/${loc_id}`, {
           headers: {
               "Content-Type": `application/json`,
@@ -37,22 +42,24 @@ const MapPage = (props) => {
         setLat(Number(data.loc_lat));
         setLng(Number(data.loc_lng)); 
       })
-    }, []);
-       
-    axios.get(url + `/api/view/image/${loc_id}`, {
+      axios.get(url + `/api/view/image/${loc_id}`, {
         headers: {
             "Content-Type": `application/json`,
         }
-    }).then((res) => {
-        var data = res.data;
-        var innerHTML = "";
-        for(var i=0; i<data.length; i++){
-          innerHTML += "<img src='http://travelbusanko.com/" + data[i].saved_path + "' class='image__box' />" ;
+      }).then((res) => {
           
-        }
-        $('.image__viewer').html(innerHTML);
+          var data = res.data;
+          var innerHTML = "";
+          for(var i=0; i<data.length; i++){
+            innerHTML += "<img src='http://travelbusanko.com/" + data[i].saved_path + "' class='image__box' />" ;
+            
+          }
+          $('.image__viewer').html(innerHTML);
 
-    })
+      })
+    }, []);
+    
+      
     
     return (
       <Container>
