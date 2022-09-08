@@ -1,0 +1,234 @@
+-- --------------------------------------------------------
+-- 호스트:                          db.travelbusanko.com
+-- 서버 버전:                        8.0.16 - MySQL Community Server - GPL
+-- 서버 OS:                        Linux
+-- HeidiSQL 버전:                  11.2.0.6213
+-- --------------------------------------------------------
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+
+-- dbtravelok 데이터베이스 구조 내보내기
+CREATE DATABASE IF NOT EXISTS `dbtravelok` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `dbtravelok`;
+
+-- 테이블 dbtravelok.auth_category 구조 내보내기
+CREATE TABLE IF NOT EXISTS `auth_category` (
+  `auth_id` char(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '권한 아이디',
+  `auth_name` varchar(50) DEFAULT NULL COMMENT '권한명',
+  PRIMARY KEY (`auth_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 테이블 데이터 dbtravelok.auth_category:~2 rows (대략적) 내보내기
+DELETE FROM `auth_category`;
+/*!40000 ALTER TABLE `auth_category` DISABLE KEYS */;
+INSERT INTO `auth_category` (`auth_id`, `auth_name`) VALUES
+	('auth_1', 'admin'),
+	('auth_2', 'manager'),
+	('auth_3', 'user');
+/*!40000 ALTER TABLE `auth_category` ENABLE KEYS */;
+
+-- 테이블 dbtravelok.blog 구조 내보내기
+CREATE TABLE IF NOT EXISTS `blog` (
+  `blog_id` char(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '블로그 아이디',
+  `title` varchar(100) DEFAULT NULL COMMENT '제목',
+  `contents` varchar(300) DEFAULT NULL COMMENT '내용',
+  `hit` int(11) DEFAULT NULL COMMENT '조회수',
+  `thumbnail` varchar(100) DEFAULT NULL COMMENT '썸네일 URL',
+  `publish_yn` char(2) DEFAULT NULL COMMENT '게시 유무',
+  `created_at` datetime DEFAULT NULL COMMENT '생성일자',
+  `updated_at` datetime DEFAULT NULL COMMENT '수정일자',
+  PRIMARY KEY (`blog_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='블로그';
+
+-- 테이블 데이터 dbtravelok.blog:~0 rows (대략적) 내보내기
+DELETE FROM `blog`;
+/*!40000 ALTER TABLE `blog` DISABLE KEYS */;
+/*!40000 ALTER TABLE `blog` ENABLE KEYS */;
+
+-- 테이블 dbtravelok.board 구조 내보내기
+CREATE TABLE IF NOT EXISTS `board` (
+  `idx` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) DEFAULT NULL,
+  `password` varchar(100) DEFAULT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `content` varchar(500) DEFAULT NULL,
+  `created_at` date DEFAULT NULL,
+  `updated_at` date DEFAULT NULL,
+  `deleted_at` date DEFAULT NULL,
+  `image` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`idx`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+-- 테이블 데이터 dbtravelok.board:~4 rows (대략적) 내보내기
+DELETE FROM `board`;
+/*!40000 ALTER TABLE `board` DISABLE KEYS */;
+INSERT INTO `board` (`idx`, `name`, `password`, `title`, `content`, `created_at`, `updated_at`, `deleted_at`, `image`) VALUES
+	(1, 'manager', '1234', 'Hi im...', 'NG', '2022-07-29', NULL, NULL, NULL),
+	(2, 'manager', '1234', 'im title', 'im...', '2022-07-29', NULL, NULL, NULL),
+	(3, 'manager', '1234', 'hahaha', 'hehehe', '2022-07-29', NULL, NULL, NULL),
+	(4, 'manager', '1234', '제목', '내용', '2022-08-04', NULL, NULL, NULL),
+	(5, 'test', 'test', '123', '345', '2022-08-05', NULL, NULL, NULL);
+/*!40000 ALTER TABLE `board` ENABLE KEYS */;
+
+-- 테이블 dbtravelok.board_test 구조 내보내기
+CREATE TABLE IF NOT EXISTS `board_test` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0',
+  `body` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
+
+-- 테이블 데이터 dbtravelok.board_test:~11 rows (대략적) 내보내기
+DELETE FROM `board_test`;
+/*!40000 ALTER TABLE `board_test` DISABLE KEYS */;
+INSERT INTO `board_test` (`id`, `title`, `body`) VALUES
+	(19, 'kcs', 'Test'),
+	(20, 'fff', 'ffff'),
+	(21, 'fffffuuuu', 'uuuu'),
+	(22, ' hhhh', 'hhh'),
+	(23, 'yyyyyyyyyy', 'yyyyyyyyy\nllll'),
+	(24, 'eee', 'eee'),
+	(25, 'ggggggghhh', 'gggg'),
+	(26, 'yy', 'yy'),
+	(27, 'kk', 'kknnnnn'),
+	(28, 'll,,,,,ghgggggggh', 'll,,,,,,ggggvg'),
+	(35, 'Fg', 'Gg');
+/*!40000 ALTER TABLE `board_test` ENABLE KEYS */;
+
+-- 테이블 dbtravelok.image_path 구조 내보내기
+CREATE TABLE IF NOT EXISTS `image_path` (
+  `path_id` char(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '경로 아이디',
+  `blog_id` char(50) DEFAULT NULL COMMENT '블로그 아이디',
+  `loc_id` char(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '위치 아이디',
+  `saved_path` varchar(200) DEFAULT NULL COMMENT '저장 경로',
+  `file_name` varchar(200) DEFAULT NULL,
+  `latitude` varchar(200) DEFAULT NULL COMMENT '위도',
+  `longitude` varchar(200) DEFAULT NULL COMMENT '경도',
+  PRIMARY KEY (`path_id`),
+  KEY `FK_image_path_blog` (`blog_id`),
+  KEY `FK_image_path_locations` (`loc_id`),
+  CONSTRAINT `FK_image_path_blog` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`),
+  CONSTRAINT `FK_image_path_locations` FOREIGN KEY (`loc_id`) REFERENCES `main_locations` (`mloc_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='이미지 경로';
+
+-- 테이블 데이터 dbtravelok.image_path:~8 rows (대략적) 내보내기
+DELETE FROM `image_path`;
+/*!40000 ALTER TABLE `image_path` DISABLE KEYS */;
+INSERT INTO `image_path` (`path_id`, `blog_id`, `loc_id`, `saved_path`, `file_name`, `latitude`, `longitude`) VALUES
+	('PATH001', NULL, 'MLOC001', 'uploads\\f7808ff0f3bac314c0a0fa30565e9814', 'GS25 ë¬ë§ì´ê³µìì .jpg', '35.158141672284', '129.18228976476'),
+	('PATH002', NULL, 'MLOC003', 'uploads/fd758d98021a819ee6c1536b847399b3', 'ì´ê¸°ë ì°ì±ë¡.jpg', '35.158141672284', '129.18228976476'),
+	('PATH003', NULL, 'MLOC001', 'uploads\\bb53ed3b5cdf94a25b7e6c9c291e1e61', 'ì´ê¸°ë ì°ì±ë¡.jpg', '35.158141672284', '129.18228976476'),
+	('PATH004', NULL, 'MLOC002', 'uploads/8de6c0daa0d65042a258e629dd1e37d3', 'GS25 ë¬ë§ì´ê³µìì .jpg', '35.158141672284', '129.18228976476'),
+	('PATH005', NULL, 'MLOC005', 'uploads/4d8778ae11af2ac87a2c8a8cf90a9666', 'íì¢ë.jpg', '35.118620223842', '129.18228976476'),
+	('PATH006', NULL, 'MLOC006', 'uploads/b0e7c791a1a146c8db134e366319b90f', 'SS-LSTM.PNG', '35.118620223842', '129.18228976476'),
+	('PATH007', NULL, 'MLOC006', 'uploads/99e25300dfe501ebde5ad23a26e433ac', 'newplot (38).png', '35.158141672284', '129.0959130382'),
+	('PATH008', NULL, 'MLOC001', 'uploads/94fe2690c49e68e5dbf9a8c3d1c30e34', 'newplot (37).png', '35.158141672284', '129.0959130382');
+/*!40000 ALTER TABLE `image_path` ENABLE KEYS */;
+
+-- 테이블 dbtravelok.loc_type 구조 내보내기
+CREATE TABLE IF NOT EXISTS `loc_type` (
+  `loctype_id` char(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '위치 타입 아이디',
+  `loctype_name` varchar(50) DEFAULT NULL COMMENT '위치 타입명',
+  PRIMARY KEY (`loctype_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='위치 타입';
+
+-- 테이블 데이터 dbtravelok.loc_type:~4 rows (대략적) 내보내기
+DELETE FROM `loc_type`;
+/*!40000 ALTER TABLE `loc_type` DISABLE KEYS */;
+INSERT INTO `loc_type` (`loctype_id`, `loctype_name`) VALUES
+	('loct_001', '대표 위치'),
+	('loct_002', '편의점'),
+	('loct_003', '화장실'),
+	('loct_004', '산 정상');
+/*!40000 ALTER TABLE `loc_type` ENABLE KEYS */;
+
+-- 테이블 dbtravelok.main_locations 구조 내보내기
+CREATE TABLE IF NOT EXISTS `main_locations` (
+  `mloc_id` char(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '위치 아이디',
+  `loc_name` varchar(50) DEFAULT NULL COMMENT '위치명',
+  `loc_lat` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '위도',
+  `loc_lng` varchar(100) DEFAULT NULL COMMENT '경도',
+  `loctype_id` char(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '위치 타입',
+  PRIMARY KEY (`mloc_id`) USING BTREE,
+  KEY `FK_locations_loc_type` (`loctype_id`),
+  CONSTRAINT `FK_locations_loc_type` FOREIGN KEY (`loctype_id`) REFERENCES `loc_type` (`loctype_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='위치';
+
+-- 테이블 데이터 dbtravelok.main_locations:~6 rows (대략적) 내보내기
+DELETE FROM `main_locations`;
+/*!40000 ALTER TABLE `main_locations` DISABLE KEYS */;
+INSERT INTO `main_locations` (`mloc_id`, `loc_name`, `loc_lat`, `loc_lng`, `loctype_id`) VALUES
+	('MLOC001', '달맞이길', '35.161547090127', '129.16979078911', 'loct_001'),
+	('MLOC002', '황령산', '35.166520538316', '129.08216545644', 'loct_001'),
+	('MLOC003', '이기대', '35.118620223842', '129.0959130382', 'loct_001'),
+	('MLOC004', '광안리', '35.146117171087 ', '129.11531819025', 'loct_001'),
+	('MLOC005', '태종대', '35.05081483332803', '129.08726292258802', 'loct_001'),
+	('MLOC006', '용궁사', 'ㅇㄴ', 'ㄴㅇㄹㄴ', 'loct_001');
+/*!40000 ALTER TABLE `main_locations` ENABLE KEYS */;
+
+-- 테이블 dbtravelok.sub_locations 구조 내보내기
+CREATE TABLE IF NOT EXISTS `sub_locations` (
+  `sloc_id` char(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '서브 위치 아이디',
+  `mloc_id` char(50) NOT NULL COMMENT '메인 위치 아이디',
+  `loc_name` varchar(50) DEFAULT NULL COMMENT '위치명',
+  `loc_lat` varchar(100) DEFAULT NULL COMMENT '위도',
+  `loc_lng` varchar(100) DEFAULT NULL COMMENT '경도',
+  `loctype_id` char(50) DEFAULT NULL COMMENT '위치 타입',
+  PRIMARY KEY (`sloc_id`),
+  KEY `FK_sub_locations_main_locations` (`mloc_id`),
+  KEY `FK_sub_locations_loc_type` (`loctype_id`),
+  CONSTRAINT `FK_sub_locations_loc_type` FOREIGN KEY (`loctype_id`) REFERENCES `loc_type` (`loctype_id`),
+  CONSTRAINT `FK_sub_locations_main_locations` FOREIGN KEY (`mloc_id`) REFERENCES `main_locations` (`mloc_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 테이블 데이터 dbtravelok.sub_locations:~5 rows (대략적) 내보내기
+DELETE FROM `sub_locations`;
+/*!40000 ALTER TABLE `sub_locations` DISABLE KEYS */;
+INSERT INTO `sub_locations` (`sloc_id`, `mloc_id`, `loc_name`, `loc_lat`, `loc_lng`, `loctype_id`) VALUES
+	('SLOC001', 'MLOC001', 'GS25 달맞이공원점', '35.158141672284', '129.18228976476', 'loct_002'),
+	('SLOC002', 'MLOC003', '이기대 산책로', '35.118620223842', '129.0959130382', 'loct_004'),
+	('SLOC005', 'MLOC002', '황령산 편의점', '35.166520538316', '129.08216545644', 'loct_002'),
+	('SLOC006', 'MLOC006', '용궁사 편의점', 'ㄴㅇㄻㄴㄹ', 'ㄴㅇㄻ', 'loct_002'),
+	('SLOC007', 'MLOC001', '달맞이길 편의점 1호', '35.118620223842', '129.0959130382', 'loct_002');
+/*!40000 ALTER TABLE `sub_locations` ENABLE KEYS */;
+
+-- 테이블 dbtravelok.users 구조 내보내기
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '아이디',
+  `auth_category` char(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '계정권한',
+  `email` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '이메일',
+  `password` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '비밀번호',
+  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '이름',
+  `phone_number` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '핸드폰 번호',
+  `birthday` char(50) DEFAULT NULL COMMENT '생년월일',
+  `created_at` date DEFAULT NULL COMMENT '생성일자',
+  `updated_at` date DEFAULT NULL COMMENT '수정일자',
+  PRIMARY KEY (`id`),
+  KEY `auth_category` (`auth_category`),
+  CONSTRAINT `FK_users_auth_category` FOREIGN KEY (`auth_category`) REFERENCES `auth_category` (`auth_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 테이블 데이터 dbtravelok.users:~8 rows (대략적) 내보내기
+DELETE FROM `users`;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` (`id`, `auth_category`, `email`, `password`, `name`, `phone_number`, `birthday`, `created_at`, `updated_at`) VALUES
+	('deded', 'auth_3', 'Deded', 'edded', 'Deded', 'Deded', '0000-00-00', NULL, NULL),
+	('denny', 'auth_3', 'Denny00123@naver.com', '1234', '이성주', '01027070046', '1998-03-26', NULL, NULL),
+	('hhs', 'auth_3', 'hhs', 'hhs', '황현숙', '1111', '1977-12-12', NULL, NULL),
+	('manager', 'auth_2', 'nk1999@naver.com', '1234', 'nk', '010-1111-2222', '1994-11-25', '2022-07-28', '2022-07-28'),
+	('manager1', 'auth_3', 'test@gmail.com', '1234', '', '010-5555-5555', '1999-01-01', NULL, NULL),
+	('manager2', 'auth_3', 'test@gmail.com', '123', '테스트', '010-5555-5555', '1999-01-01', NULL, NULL),
+	('test', 'auth_3', 'hhs@pknu.ac.kr', '1234', 'hhs', '111-1111-1111', NULL, NULL, NULL),
+	('test2', 'auth_3', 'hhs2', '1234', 'hhs2', '222-2222-2222', NULL, NULL, NULL);
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;

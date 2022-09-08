@@ -5,11 +5,10 @@ import './LoginPage.css';
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const url = 'http://travelbusanko.com'; // 'http://localhost:5000'// 
+const url = 'http://travelbusanko.com'; 
 
 function ModifyUser(props){
     const userinfo = props.location.inputValue.userinfo;
-    testtest
     const [inputId, setInputId] = useState('');
     const [inputPw, setInputPw] = useState('');
     const [inputName, setInputName] = useState('');
@@ -46,6 +45,7 @@ function ModifyUser(props){
                 }})
             .then(res =>{
                 var data = res.data[0];
+                console.log(data.birthday);
                 setInputId(data.id);
                 setInputPw(data.password);
                 setInputName(data.name);
@@ -56,8 +56,19 @@ function ModifyUser(props){
         }
         
     },[]);
-    const onClickEvent = {
-
+    const onClickEvent = () => {
+        axios.post(url + '/api/user/info/update', null, {
+            params: {
+                'user_id': inputId,
+                'user_pwd': inputPw,
+                'user_name': inputName,
+                'user_email': inputEmail,
+                'user_phone': inputPhone,
+                'user_birth': inputBirth,
+            }
+        }).then((response) => {
+            document.location.href = url;
+        }).catch()
     }
     
     
@@ -94,7 +105,7 @@ function ModifyUser(props){
                             <input type="text" className="form-control mt-1" placeholder="6자리 생년월일 입력" name = "user_birth" value={inputBirth} onChange = { handleinputBirth } />
                         </div>
                         <div className="d-grid gap-2 mt-3">
-                            <button type="submit" className="btn btn-primary" onClick={onClickEvent}>
+                            <button type="button" className="btn btn-primary" onClick={ onClickEvent }>
                             회원 정보 수정
                             </button>
                         </div>

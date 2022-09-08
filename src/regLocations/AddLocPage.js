@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { useHistory } from 'react-router-dom';
 import $ from 'jquery';
 import Swal from "sweetalert2";
 
@@ -76,8 +77,13 @@ function AddLocPage() {
                 $(".sub_selectbox").html(innerHTML);                
             })            
         } else{
-            $(".sub_selectbox").css("display", "none");                
+            $(".sub_selectbox").css("display", "none");        
         }
+    }
+
+    
+    const handleSubmit = (e) => {
+        document.location.href = url;
     }
     
     useEffect(()=>{
@@ -86,7 +92,7 @@ function AddLocPage() {
 
   return (
     <div className='m-5'>
-    <Form name="form" method="post" encType='multipart/form-data' action="http://travelbusanko.com/api/add/location">
+    <Form name="form" method="post" encType='multipart/form-data' action="http://travelbusanko.com/api/add/location" onSubmit={ handleSubmit }>
         <Form.Label>위치 타입</Form.Label>
         <Form.Select aria-label="Default select example" className='selectbox' name="loctype_id" onChange={ addSubLocations }>
             {/* <option value="1">One</option>        "http://travelbusanko.com/api/add/location" http://localhost:5000/api/add/location

@@ -12,7 +12,7 @@ const NavBar = (props) =>{
     const [target, setTarget] = useState(null);
     const nextPage = useHistory();
     const ref = useRef(null);
-    console.log(nextPage);
+    
     const handleClick = (event) => {
       setShow(!show);
       setTarget(event.target);

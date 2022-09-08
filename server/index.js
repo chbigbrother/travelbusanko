@@ -303,7 +303,7 @@ app.post('/api/checkid', (req, res)=>{
 
 app.get('/api/user/info/:id', (req, res)=>{
     const id = req.params.id;
-    console.log(id);
+    
     const sqlQuery = "SELECT * FROM users WHERE id=?";
     db.query(sqlQuery, [id], (err, result)=>{
         res.json(result)   
@@ -311,14 +311,13 @@ app.get('/api/user/info/:id', (req, res)=>{
 })
 
 app.post('/api/user/info/update', (req, res)=>{
-    console.log("requested");
     const id = req.query.user_id;
     const password = req.query.user_pwd;
     const email = req.query.user_email;
     const name = req.query.user_name;
     const phone_number = req.query.user_phone;
     const birthday = req.query.user_birth;
-
+    
     const sqlQuery = "UPDATE users SET email=?, password=?, name=?, phone_number=?, birthday=? WHERE id=?";
     db.query(sqlQuery, [email, password, name, phone_number, birthday, id], (err, result) => {
         res.send('success!');
@@ -453,8 +452,8 @@ app.post('/api/add/location', upload.array("uploadfile"), async (req, res)=>{
             path_ids.push(path_id);
             const saved_path = req.files[i].path;
             const file_name = req.files[i].originalname;
-            const sqlQuery = "INSERT INTO image_path(path_id, saved_path, file_name) VALUES (?,?,?)";
-            db.query(sqlQuery, [path_id, saved_path, file_name], (err, result) => {
+            const sqlQuery = "INSERT INTO image_path(path_id, saved_path, file_name, latitude, longitude) VALUES (?,?,?,?,?)";
+            db.query(sqlQuery, [path_id, saved_path, file_name, loc_lat, loc_lng], (err, result) => {
                 
             });
             
@@ -479,9 +478,10 @@ app.post('/api/add/location', upload.array("uploadfile"), async (req, res)=>{
 app.get('/api/view/image/:loc_id', async (req, res)=>{
     const loc_id = req.params.loc_id;
     const sqlQuery = "SELECT * FROM image_path WHERE loc_id=?";
+    
     db.query(sqlQuery, [loc_id], (err, result)=>{
         res.json(result);   
-    })       
+    })   
 })
 
 
