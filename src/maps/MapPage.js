@@ -20,6 +20,7 @@ const MapPage = (props) => {
     const [lat, setLat] = useState('');
     const [lng, setLng] = useState('');
     const [places, setPlaces] = useState([]);
+    const [map, setMap]= useState('');
     const center = {
       lat : lat,
       lng : lng
@@ -49,7 +50,7 @@ const MapPage = (props) => {
           var data = res.data;
           var innerHTML = "";
           for(var i=0; i<data.length; i++){
-            innerHTML += "<img src='http://travelbusanko.com/" + data[i].saved_path + "' class='image__box' />" ;
+            innerHTML += "<img src='http://travelbusanko.com/" + data[i].saved_path + "' class='image__box' id='"+ data[i].path_id + "' />" ;
             data[i].position = {
               lat: parseFloat(data[i].latitude),
               lng: parseFloat(data[i].longitude)
@@ -61,7 +62,17 @@ const MapPage = (props) => {
       
     }, []);
 
-    
+    const handleFigureClick = (e) => {
+      for (var i=0; i<places.length; i++){
+        if(places[i].path_id == e.target.id){
+          center.lat = parseFloat(places[i].latitude);
+          center.lng = parseFloat(places[i].longitude);
+        }
+      }
+      map.panTo(center);
+      map.setZoom(17);
+    } 
+
     return (
       <Container>
         <Row>
@@ -72,6 +83,9 @@ const MapPage = (props) => {
                 mapContainerStyle={containerStyle}
                 center={center}
                 zoom={14}
+                onLoad={map=>setMap(map)}
+                id = "map"
+
               >
                 
                 { places.length !== 0 && places.map((place) => (
@@ -86,7 +100,7 @@ const MapPage = (props) => {
             </LoadScript>
           </Col>
           <Col>
-          <Figure className="image__viewer m-3">
+          <Figure className="image__viewer m-3" onClick={ handleFigureClick }>
 
           </Figure>
             {/* <div className="image__viewer m-3">

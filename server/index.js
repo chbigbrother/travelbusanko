@@ -68,7 +68,8 @@ const id_generate = (request, id) => {
         if (typeof(id) == "undefined"){
             int_id = "0";
         } else{
-            int_id = id.slice(-1);
+            int_id = id.slice(-3);
+            
         }
         var cnt_id = parseInt(int_id) + 1;
         var str_id = "";
@@ -450,6 +451,7 @@ app.post('/api/add/location', upload.array("uploadfile"), async (req, res)=>{
             const get_path_id = await id_getter("image_path", "path_id");
             const path_id = await id_generate('PATH', get_path_id.path_id);
             path_ids.push(path_id);
+            console.log(path_id);
             const saved_path = req.files[i].path;
             const file_name = req.files[i].originalname;
             const sqlQuery = "INSERT INTO image_path(path_id, saved_path, file_name, latitude, longitude) VALUES (?,?,?,?,?)";
@@ -460,10 +462,10 @@ app.post('/api/add/location', upload.array("uploadfile"), async (req, res)=>{
             if(i==req.files.length-1){
                 if(req.body.loctype_id == "loct_001"){
                     addmloc_db_insert(columns, path_ids);
-                    res.send('success!');
+                    res.redirect('http://travelbusanko.com/home');
                 } else{
                     addsloc_db_insert(columns, path_ids);
-                    res.send('success!');
+                    res.redirect('http://travelbusanko.com/home');
                 }
                 
             }

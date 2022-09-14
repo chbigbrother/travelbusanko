@@ -82,17 +82,13 @@ function AddLocPage() {
     }
 
     
-    const handleSubmit = (e) => {
-        document.location.href = url;
-    }
-    
     useEffect(()=>{
         
     })
 
   return (
     <div className='m-5'>
-    <Form name="form" method="post" encType='multipart/form-data' action="http://travelbusanko.com/api/add/location" onSubmit={ handleSubmit }>
+    <Form name="form" method="post" encType='multipart/form-data' action="http://travelbusanko.com/api/add/location">
         <Form.Label>위치 타입</Form.Label>
         <Form.Select aria-label="Default select example" className='selectbox' name="loctype_id" onChange={ addSubLocations }>
             {/* <option value="1">One</option>        "http://travelbusanko.com/api/add/location" http://localhost:5000/api/add/location
